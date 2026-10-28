@@ -44,15 +44,16 @@ func (h *Handler) Download(c *gin.Context) {
 		quality = "best"
 	}
 
-	filePath, err := h.Downloader.Download(c.Request.Context(), req.URL, quality)
+	filePath, mediaType, err := h.Downloader.Download(c.Request.Context(), req.URL, quality, req.FormatID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, models.DownloadResponse{
-		Status:   "completed",
-		Message:  "Download finished",
-		FilePath: filePath,
+		Status:    "completed",
+		Message:   "Download finished",
+		FilePath:  filePath,
+		MediaType: mediaType,
 	})
 }
