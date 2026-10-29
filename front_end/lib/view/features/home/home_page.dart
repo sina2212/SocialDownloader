@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/view/features/download/download_bloc.dart';
-import 'package:front_end/view/features/download/download_event.dart';
-import 'package:front_end/view/features/download/download_state.dart';
+import 'package:front_end/view/features/home/download/download_bloc.dart';
+import 'package:front_end/view/features/home/download/download_event.dart';
+import 'package:front_end/view/features/home/download/download_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
