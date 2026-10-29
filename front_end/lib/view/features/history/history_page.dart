@@ -9,7 +9,7 @@ class HistoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تاریخچه دانلودها'), centerTitle: true),
+      appBar: AppBar(title: const Text('History'), centerTitle: true),
       body: BlocBuilder<DownloadBloc, DownloadState>(
         builder: (context, state) {
           final hasHistory = state.filePath != null || state.videoInfo != null;
@@ -22,13 +22,13 @@ class HistoryPage extends StatelessWidget {
                   Icon(Icons.history, size: 72, color: Theme.of(context).colorScheme.outline),
                   const SizedBox(height: 16),
                   Text(
-                    'هنوز دانلودی ثبت نشده است',
+                    'No downloads recorded yet',
                     style: Theme.of(context).textTheme.titleMedium
                         ?.copyWith(color: Theme.of(context).colorScheme.outline),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'پس از دانلود موفق، اینجا نمایش داده می‌شود',
+                    'Once you download successfully, it will be shown here',
                     style: Theme.of(context).textTheme.bodyMedium
                         ?.copyWith(color: Theme.of(context).colorScheme.outline),
                     textAlign: TextAlign.center,
@@ -62,8 +62,8 @@ class HistoryPage extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     subtitle: Text(
-                      'آپلودر: ${state.videoInfo!.uploader}\n'
-                      'مدت: ${state.videoInfo!.duration.toStringAsFixed(0)} ثانیه',
+                      'Uploader: ${state.videoInfo!.uploader}\n'
+                      'Duration: ${state.videoInfo!.duration.toStringAsFixed(0)} seconds',
                     ),
                     isThreeLine: true,
                   ),
@@ -74,7 +74,7 @@ class HistoryPage extends StatelessWidget {
                   color: Colors.green.shade50,
                   child: ListTile(
                     leading: const Icon(Icons.check_circle, color: Colors.green),
-                    title: const Text('آخرین دانلود موفق'),
+                    title: const Text('last Downloaded File'),
                     subtitle: Text(state.filePath!),
                   ),
                 ),

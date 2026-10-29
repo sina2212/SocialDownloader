@@ -23,11 +23,7 @@ final appRouter = GoRouter(
         StatefulShellBranch(
           navigatorKey: _shellNavigatorHomeKey,
           routes: [
-            GoRoute(
-              path: '/',
-              name: 'home',
-              builder: (context, state) => const HomeScreen(),
-            ),
+            GoRoute(path: '/', name: 'home', builder: (context, state) => const HomeScreen()),
           ],
         ),
         // شاخه تاریخچه

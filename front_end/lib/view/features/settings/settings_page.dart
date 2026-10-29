@@ -17,18 +17,18 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تنظیمات'), centerTitle: true),
+      appBar: AppBar(title: const Text('Settings'), centerTitle: true),
       body: ListView(
         children: [
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'دانلود',
+              'Download',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
             ),
           ),
           ListTile(
-            title: const Text('کیفیت پیش‌فرض'),
+            title: const Text('Default Quality'),
             subtitle: Text(_defaultQuality),
             trailing: DropdownButton<String>(
               value: _defaultQuality,
@@ -45,13 +45,13 @@ class _SettingsPageState extends State<SettingsPage> {
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'ظاهر',
+              'Appearance',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
             ),
           ),
           SwitchListTile(
-            title: const Text('حالت تاریک'),
-            subtitle: const Text('فعلاً فقط در این صفحه ذخیره می‌شود'),
+            title: const Text('Dark Mode'),
+            subtitle: const Text('Will only be saved on this page for now'),
             value: _darkMode,
             onChanged: (value) {
               setState(() => _darkMode = value);
@@ -61,12 +61,12 @@ class _SettingsPageState extends State<SettingsPage> {
           const Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
-              'سرور',
+              'Server',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
             ),
           ),
           ListTile(
-            title: const Text('آدرس بک‌اند'),
+            title: const Text('Backend URL'),
             subtitle: Text(_serverUrl),
             trailing: const Icon(Icons.edit),
             onTap: () async {
@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
               final result = await showDialog<String>(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                  title: const Text('آدرس سرور'),
+                  title: const Text('Backend URL'),
                   content: TextField(
                     controller: controller,
                     decoration: const InputDecoration(
@@ -84,10 +84,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     keyboardType: TextInputType.url,
                   ),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('انصراف')),
+                    TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
                     FilledButton(
                       onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-                      child: const Text('ذخیره'),
+                      child: const Text('Save'),
                     ),
                   ],
                 ),
@@ -98,14 +98,14 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'درباره',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey),
+          const ListTile(title: Text('Social Downloader'), subtitle: Text('Version 1.0.0 — Web')),
+          const ListTile(
+            title: Text(
+              '© nazarbaazaar.com',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
           ),
-          const ListTile(title: Text('Social Downloader'), subtitle: Text('نسخه ۱.۰.۰ — وب')),
         ],
       ),
     );

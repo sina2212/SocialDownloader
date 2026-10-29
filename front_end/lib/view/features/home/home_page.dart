@@ -12,11 +12,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _profileUrlController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
 
   @override
   void dispose() {
     _urlController.dispose();
+    _profileUrlController.dispose();
     super.dispose();
   }
 
@@ -29,17 +31,55 @@ class _HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<DownloadBloc, DownloadState>(
           builder: (context, state) {
             return Column(
+              spacing: 16,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextField(
-                  controller: _urlController,
+                  controller: _profileUrlController,
                   decoration: const InputDecoration(
-                    labelText: 'لینک پست',
+                    labelText: 'Profile Username or Link',
                     border: OutlineInputBorder(),
-                    hintText: 'لینک اینستاگرام، یوتیوب، ایکس و ...',
+                    hintText: 'Instagram, X, YouTube, TikTok, ... Profile',
                   ),
                 ),
-                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: state.status == DownloadStatus.loading
+                            ? null
+                            : () {
+                                context.read<DownloadBloc>().add(
+                                  ExtractRequested(_profileUrlController.text.trim()),
+                                );
+                              },
+                        child: const Text('Extract Info'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: state.status == DownloadStatus.loading
+                            ? null
+                            : () {
+                                context.read<DownloadBloc>().add(
+                                  DownloadRequested(_profileUrlController.text.trim()),
+                                );
+                              },
+                        child: const Text('Download'),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                TextField(
+                  controller: _urlController,
+                  decoration: const InputDecoration(
+                    labelText: 'Link',
+                    border: OutlineInputBorder(),
+                    hintText: 'Instagram, X, YouTube, TikTok, ...Links',
+                  ),
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -51,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ExtractRequested(_urlController.text.trim()),
                                 );
                               },
-                        child: const Text('استخراج اطلاعات'),
+                        child: const Text('Extract Info'),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -64,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   DownloadRequested(_urlController.text.trim()),
                                 );
                               },
-                        child: const Text('دانلود'),
+                        child: const Text('Download'),
                       ),
                     ),
                   ],
@@ -81,13 +121,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   Text(state.videoInfo!.title, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
-                  Text('آپلودر: ${state.videoInfo!.uploader}'),
-                  Text('مدت: ${state.videoInfo!.duration.toStringAsFixed(0)} ثانیه'),
+                  Text('Uploader: ${state.videoInfo!.uploader}'),
+                  Text('Duration: ${state.videoInfo!.duration.toStringAsFixed(0)} seconds'),
                 ],
                 if (state.filePath != null) ...[
                   const SizedBox(height: 16),
                   Text(
-                    'دانلود شد:\n${state.filePath}',
+                    'Downloaded:\n${state.filePath}',
                     style: const TextStyle(color: Colors.green),
                   ),
                 ],

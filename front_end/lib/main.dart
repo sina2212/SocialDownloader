@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (_) => DownloadBloc(repository),
       child: MaterialApp.router(
+        locale: const Locale('fa', 'IR'),
         title: 'Social Downloader',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
