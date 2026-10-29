@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -147,42 +147,58 @@ func buildFormatSelector(quality, formatID string) string {
 }
 
 // Download
-func (d *Downloader) Download(ctx context.Context, url, quality, formatID string) (string, string, error) {
-	info, err := d.ExtractInfo(ctx, url)
-	if err != nil {
-		return "", "", err
-	}
-
+func (d *Downloader) Download(ctx context.Context, url, quality, formatID string) ([]string, string, error) {
 	jobID := uuid.New().String()
-	outputTemplate := filepath.Join(d.DownloadDir, jobID+"_%(title).80B.%(ext)s")
-
-	if info.MediaType == "image" {
-		return d.downloadImageWithYtDlp(ctx, url, jobID)
-	}
-
-	formatSelector := buildFormatSelector(quality, formatID)
+	outputTemplate := filepath.Join(d.DownloadDir, jobID+"_%(playlist_index)02d_%(title).60B.%(ext)s")
 
 	dl := ytdlp.New().
-		NoPlaylist().
 		NoOverwrites().
 		Continue().
 		Output(outputTemplate).
-		Format(formatSelector).
+		IgnoreNoFormatsError().
+		WriteThumbnail().
+		ConvertThumbnails("jpg").
 		FormatSort("res,ext:mp4:m4a").
 		MergeOutputFormat("mp4").
 		RecodeVideo("mp4")
 
-	_, err = dl.Run(ctx, url)
+	if formatID != "" {
+		dl = dl.Format(formatID)
+	} else {
+		dl = dl.Format(buildFormatSelector(quality, ""))
+	}
+
+	_, err := dl.Run(ctx, url)
 	if err != nil {
-		return "", "", fmt.Errorf("download failed: %w", err)
+		errStr := err.Error()
+		if !strings.Contains(errStr, "There is no video") &&
+			!strings.Contains(errStr, "No video formats found") {
+			return nil, "", fmt.Errorf("download failed: %w", err)
+		}
 	}
 
-	files, _ := filepath.Glob(filepath.Join(d.DownloadDir, jobID+"*"))
-	if len(files) == 0 {
-		return "", "", fmt.Errorf("downloaded file not found")
+	files, err := filepath.Glob(filepath.Join(d.DownloadDir, jobID+"*"))
+	if err != nil || len(files) == 0 {
+		return nil, "", fmt.Errorf("no files downloaded")
 	}
 
-	return files[0], "video", nil
+	sort.Strings(files)
+
+	mediaType := "video"
+	imageCount := 0
+	for _, f := range files {
+		ext := strings.ToLower(filepath.Ext(f))
+		if ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".webp" {
+			imageCount++
+		}
+	}
+	if imageCount == len(files) {
+		mediaType = "image"
+	} else if imageCount > 0 {
+		mediaType = "mixed"
+	}
+
+	return files, mediaType, nil
 }
 
 // downloadImageWithYtDlp
@@ -288,17 +304,4 @@ func (d *Downloader) DownloadWithProgress(ctx context.Context, url, quality, for
 	}
 
 	return files[0], "video", nil
-}
-
-func sanitizeFilename(name string) string {
-	re := regexp.MustCompile(`[<>:"/\\|?*\x00-\x1F]`)
-	name = re.ReplaceAllString(name, "")
-	name = strings.TrimSpace(name)
-	if len(name) > 80 {
-		name = name[:80]
-	}
-	if name == "" {
-		return "untitled"
-	}
-	return name
 }

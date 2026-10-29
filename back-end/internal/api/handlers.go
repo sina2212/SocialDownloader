@@ -31,7 +31,6 @@ func (h *Handler) Extract(c *gin.Context) {
 
 	c.JSON(http.StatusOK, info)
 }
-
 func (h *Handler) Download(c *gin.Context) {
 	var req models.DownloadRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -44,16 +43,24 @@ func (h *Handler) Download(c *gin.Context) {
 		quality = "best"
 	}
 
-	filePath, mediaType, err := h.Downloader.Download(c.Request.Context(), req.URL, quality, req.FormatID)
+	files, mediaType, err := h.Downloader.Download(c.Request.Context(), req.URL, quality, req.FormatID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, models.DownloadResponse{
+	resp := models.DownloadResponse{
 		Status:    "completed",
 		Message:   "Download finished",
-		FilePath:  filePath,
 		MediaType: mediaType,
-	})
+		Count:     len(files),
+		FilePaths: files,
+	}
+
+	// برای سازگاری با کدهای قبلی
+	if len(files) == 1 {
+		resp.FilePath = files[0]
+	}
+
+	c.JSON(http.StatusOK, resp)
 }

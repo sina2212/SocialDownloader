@@ -31,9 +31,11 @@ type DownloadRequest struct {
 }
 
 type DownloadResponse struct {
-	JobID     string `json:"job_id"`
-	Status    string `json:"status"`
-	Message   string `json:"message"`
-	FilePath  string `json:"file_path,omitempty"`
-	MediaType string `json:"media_type,omitempty"`
+	JobID     string   `json:"job_id"`
+	Status    string   `json:"status"`
+	Message   string   `json:"message"`
+	FilePath  string   `json:"file_path,omitempty"`
+	FilePaths []string `json:"file_paths,omitempty"`
+	MediaType string   `json:"media_type,omitempty"`
+	Count     int      `json:"count,omitempty"`
 }
