@@ -9,6 +9,7 @@ type MediaInfo struct {
 	Description string   `json:"description"`
 	WebpageURL  string   `json:"webpage_url"`
 	MediaType   string   `json:"media_type"`
+	MediaURLs   []string `json:"media_urls,omitempty"`
 	Formats     []Format `json:"formats"`
 }
 
