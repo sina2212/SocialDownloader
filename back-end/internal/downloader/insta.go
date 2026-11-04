@@ -23,6 +23,9 @@ func (d *Downloader) instaExtractInfo(ctx context.Context, url string) (*models.
 		NoWarnings().
 		SkipDownload().
 		IgnoreNoFormatsError()
+	if d.CookiesFile != "" {
+		dl = dl.Cookies(d.CookiesFile)
+	}
 
 	result, err := dl.Run(ctx, url)
 	if err != nil {
@@ -119,6 +122,7 @@ func getString(m map[string]interface{}, key string) string {
 func (d *Downloader) instaDownload(ctx context.Context, url, quality, formatID string) ([]string, string, error) {
 	jobID := uuid.New().String()
 	outputTemplate := filepath.Join(d.DownloadDir, jobID+"_%(playlist_index)02d_%(title).60B.%(ext)s")
+	print("INSTA");
 
 	dl := ytdlp.New().
 		NoOverwrites().
@@ -130,6 +134,10 @@ func (d *Downloader) instaDownload(ctx context.Context, url, quality, formatID s
 		FormatSort("res,ext:mp4:m4a").
 		MergeOutputFormat("mp4").
 		RecodeVideo("mp4")
+	if d.CookiesFile != "" {
+		dl = dl.Cookies(d.CookiesFile)
+	}
+	print(dl.Cookies(d.CookiesFile));
 
 	if formatID != "" {
 		dl = dl.Format(formatID)
@@ -180,6 +188,9 @@ func (d *Downloader) instaDownloadImageWithYtDlp(ctx context.Context, url, jobID
 		IgnoreNoFormatsError().
 		ConvertThumbnails("jpg").
 		Output(outputTemplate)
+	if d.CookiesFile != "" {
+		dl = dl.Cookies(d.CookiesFile)
+	}
 
 	_, err := dl.Run(ctx, url)
 	if err != nil {
@@ -262,6 +273,9 @@ func (d *Downloader) instaDownloadWithProgress(ctx context.Context, url, quality
 			progressCb(percent, string(prog.Status))
 		})
 
+	if d.CookiesFile != "" {
+		dl = dl.Cookies(d.CookiesFile)
+	}
 	_, err = dl.Run(ctx, url)
 	if err != nil {
 		return "", "", fmt.Errorf("download failed: %w", err)

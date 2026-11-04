@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	dl := downloader.New("./downloads")
+	dl := downloader.New("./downloads", "./insta_cookie.txt")
 
 	handler := api.NewHandler(dl)
 

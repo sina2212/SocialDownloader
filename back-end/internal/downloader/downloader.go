@@ -11,11 +11,11 @@ import (
 
 // Downloader is the platform-independent entry point. Platform-specific
 // extraction and download logic lives in instagram.go and twitter.go.
-type Downloader struct{ DownloadDir string }
+type Downloader struct{ DownloadDir string; CookiesFile string }
 
-func New(downloadDir string) *Downloader {
+func New(downloadDir, cookiesFile string) *Downloader {
 	_ = os.MkdirAll(downloadDir, 0755)
-	return &Downloader{DownloadDir: downloadDir}
+	return &Downloader{DownloadDir: downloadDir, CookiesFile: cookiesFile}
 }
 
 func (d *Downloader) ExtractInfo(ctx context.Context, rawURL string) (*models.MediaInfo, error) {
