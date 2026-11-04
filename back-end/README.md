@@ -25,3 +25,6 @@ For private-account downloads, use this only with an account you own or are auth
 
 Cookie files grant access to your account. Do not commit `insta_cookie.txt`, share it, or include it in logs or screenshots. Add it to `.gitignore`, keep it local, and delete or rotate the session if it is exposed. Respect Instagram's terms and the account owner's privacy.
 ```
+Invoke-RestMethod -Method POST -Uri "http://localhost:8080/download" -ContentType "application/json" -Body '{"url": "post_url"}' => for download
+
+Invoke-RestMethod -Method POST -Uri "http://localhost:8080/extract" -ContentType "application/json" -Body '{"url": "post_url"}' => for extract the post info
